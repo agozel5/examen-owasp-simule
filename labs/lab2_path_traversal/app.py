@@ -70,9 +70,12 @@ def create_app(data_dir=None):
     @app.get("/image")
     def image():
         filename = request.args.get("filename", "")
-        # Protection naive : on retire les sequences "../"
-        filename = filename.replace("../", "")
-        path = os.path.join(images_dir, filename)
+        if "\x00" in filename:
+            return "Requete invalide", 400
+        base = os.path.realpath(images_dir)
+        path = os.path.realpath(os.path.join(base, filename))
+        if os.path.commonpath([base, path]) != base:
+            return "Acces refuse", 403
         if not os.path.isfile(path):
             return "Image introuvable", 404
         with open(path, "rb") as fh:
