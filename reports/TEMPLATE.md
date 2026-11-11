@@ -49,7 +49,12 @@ HTTP/1.1 200 OK
 
 **Résultat** : flag récupéré `FLAG{...}`
 
-*(Captures d'écran Burp en pièce jointe si pertinent : `reports/screenshots/labN-*.png`)*
+**Capture d'écran** :
+
+![Requête Repeater montrant la facture d'un autre client](screenshots/labN-01-repeater.png)
+
+*(enregistrer les images dans `reports/screenshots/`, nommées `labN-NN-description.png` ;
+une légende courte sous chaque image explique ce qu'elle démontre)*
 
 ---
 
