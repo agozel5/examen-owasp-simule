@@ -1,0 +1,27 @@
+name: tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Permissions minimales (cf. cours A03 : CI/CD).
+# En production, on epinglerait aussi les actions a un SHA de commit.
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    name: lab${{ matrix.lab }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        lab: [1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -v tests/test_lab${{ matrix.lab }}.py
