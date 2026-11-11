@@ -82,9 +82,15 @@ def norm_lab(name):
 
 def stop_labs(state):
     for info in (state or {}).get("labs", {}).values():
+        pid = info.get("pid")
+        if not pid:
+            continue
         try:
-            os.killpg(os.getpgid(info["pid"]), signal.SIGTERM)
-        except (ProcessLookupError, PermissionError, KeyError, OSError):
+            if os.name == "nt":  # Windows : arreter le processus et ses enfants
+                subprocess.run(["taskkill", "/PID", str(pid), "/T", "/F"], capture_output=True)
+            else:
+                os.killpg(os.getpgid(pid), signal.SIGTERM)
+        except (ProcessLookupError, PermissionError, OSError):
             pass
 
 
@@ -103,9 +109,13 @@ def cmd_start(_):
         env[f"FLAG_{lab_id.upper()}"] = flag
         env["PORT"] = str(lab["port"])
         log = open(STATE_DIR / "logs" / f"{lab_id}.log", "w")
+        if os.name == "nt":
+            detach = {"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP}
+        else:
+            detach = {"start_new_session": True}
         proc = subprocess.Popen(
             [sys.executable, str(ROOT / "labs" / lab["dir"] / "app.py")],
-            cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT, start_new_session=True,
+            cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT, **detach,
         )
         labs_state[lab_id] = {"sha256": sha(flag), "pid": proc.pid, "port": lab["port"], "solved_at": None}
 

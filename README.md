@@ -11,6 +11,13 @@ Barème : **30 % QCM, 70 % CTF**. Autorisé : cours, Cyber Library, internet, IA
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
+```
+
+Sous **Windows (PowerShell)** : `python -m venv .venv`, puis `.venv\Scripts\Activate.ps1`
+(si bloqué : `Set-ExecutionPolicy -Scope Process Bypass`), puis `pip install -r requirements.txt`.
+Utilisez `python` à la place de `python3`.
+
+```bash
 
 # Dépôt GitHub (privé)
 git init -b main && git add . && git commit -m "Examen blanc : état initial"
