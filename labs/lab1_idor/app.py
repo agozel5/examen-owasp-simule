@@ -112,6 +112,8 @@ def create_app():
         inv = invoices.get(inv_id)
         if inv is None:
             return jsonify(error="facture introuvable"), 404
+        if inv["owner_id"] != user["id"]:
+            return jsonify(error="acces refuse"), 403
         return jsonify(inv)
 
     return app
